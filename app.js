@@ -2,6 +2,9 @@
 (function () {
   'use strict';
 
+  const WEB3FORMS_URL = 'https://api.web3forms.com/submit';
+  const WEB3FORMS_ACCESS_KEY = '1a910617-8533-438d-8e87-ee6885ac20e0';
+
   // State Management
   const state = {
     currentStep: 1,
@@ -27,6 +30,7 @@
     menuSearch: '',
     reservations: [],
     isHostMode: false,
+    isSubmitting: false,
     activeConfirmedBooking: null
   };
 
@@ -955,13 +959,60 @@
     }
   }
 
+  function sendBookingDetails(booking) {
+    const preorderLines = Object.entries(booking.preorders).map(([id, qty]) => {
+      const item = RESTAURANT_DATA.menuItems.find(menuItem => menuItem.id === id);
+      return item ? `${item.name} x ${qty} = ₹${(item.price * qty).toLocaleString()}` : '';
+    }).filter(Boolean);
+
+    const formData = new FormData();
+    formData.append('access_key', WEB3FORMS_ACCESS_KEY);
+    formData.append('subject', `New Zaika India booking - ${booking.id}`);
+    formData.append('from_name', 'Zaika India Website');
+    formData.append('name', booking.guest.name);
+    formData.append('email', booking.guest.email || 'No email provided');
+    formData.append('phone', booking.guest.phone);
+    formData.append('message', [
+      `Booking ID: ${booking.id}`,
+      `Date: ${formatDateDisplay(booking.date)}`,
+      `Time: ${booking.timeSlot} (${booking.mealType})`,
+      `Guests: ${booking.partySize}`,
+      `Table: ${booking.table.name} (${booking.table.zone})`,
+      `Occasion: ${booking.guest.occasion}`,
+      `Dietary restrictions: ${booking.guest.dietaryRestrictions || 'None'}`,
+      `Special requests: ${booking.guest.specialRequests || 'None'}`,
+      `Pre-orders: ${preorderLines.length ? preorderLines.join('; ') : 'None'}`,
+      `Total estimate: ₹${booking.totalEstimate.toLocaleString()}`
+    ].join('\n'));
+
+    return fetch(WEB3FORMS_URL, {
+      method: 'POST',
+      headers: { Accept: 'application/json' },
+      body: formData
+    })
+      .then(response => response.json().then(result => response.ok && result.success !== false))
+      .catch(error => {
+        console.warn('Web3Forms error:', error);
+        return false;
+      });
+  }
+
   // Submit Reservation
   function submitReservation() {
+    if (state.isSubmitting) return;
+
     const guest = state.booking.guest;
     if (!guest.name) {
       showToast('Please enter your full name', 'error');
       document.getElementById('guestFullName')?.focus();
       return;
+    }
+
+    state.isSubmitting = true;
+    const submitButton = document.getElementById('btnNextStep');
+    if (submitButton) {
+      submitButton.disabled = true;
+      submitButton.classList.add('opacity-60', 'cursor-wait');
     }
     if (!guest.phone) {
       showToast('Please enter a contact phone number', 'error');
@@ -1001,12 +1052,25 @@
     }
 
     state.activeConfirmedBooking = newReservation;
-    showToast(`Booking ${newReservation.id} confirmed!`, 'success');
+    showToast(`Booking ${newReservation.id} confirmed. Sending details...`, 'gold');
 
     // Show Confirmation Modal Pass
     renderConfirmationModal(newReservation);
     renderHostDashboard();
     renderFloorPlan();
+
+    sendBookingDetails(newReservation).then(emailSent => {
+      showToast(
+        emailSent ? 'Booking details sent successfully.' : 'Booking saved, but email delivery failed.',
+        emailSent ? 'success' : 'error'
+      );
+    }).finally(() => {
+      state.isSubmitting = false;
+      if (submitButton) {
+        submitButton.disabled = false;
+        submitButton.classList.remove('opacity-60', 'cursor-wait');
+      }
+    });
   }
 
   // Render Confirmation Pass Modal
