@@ -1,0 +1,262 @@
+/* Custom Luxury & Interactive Styles for L'Aura Bistro */
+@import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600;700;800&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap');
+
+:root {
+  --primary-gold: #e5b95c;
+  --primary-gold-dark: #b88628;
+  --gold-glow: rgba(229, 185, 92, 0.25);
+  --bg-dark: #0a0c10;
+  --card-dark: #121620;
+  --card-border: rgba(229, 185, 92, 0.15);
+  --table-available: #10b981;
+  --table-reserved: #ef4444;
+  --table-selected: #e5b95c;
+  --table-occupied: #f59e0b;
+}
+
+body {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  background-color: var(--bg-dark);
+  color: #f3f4f6;
+  overflow-x: hidden;
+}
+
+.font-serif {
+  font-family: 'Cinzel', serif;
+}
+
+/* Glassmorphism */
+.glass-panel {
+  background: rgba(18, 22, 32, 0.85);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid var(--card-border);
+}
+
+.glass-header {
+  background: rgba(10, 12, 16, 0.88);
+  backdrop-filter: blur(16px);
+  border-bottom: 1px solid rgba(229, 185, 92, 0.12);
+}
+
+/* Gold Gradient Text */
+.gold-gradient-text {
+  background: linear-gradient(135deg, #fef08a 0%, #e5b95c 40%, #b88628 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.gold-gradient-btn {
+  background: linear-gradient(135deg, #e5b95c 0%, #b88628 100%);
+  color: #0b0d13;
+  font-weight: 600;
+  transition: all 0.25s ease;
+  box-shadow: 0 4px 15px rgba(229, 185, 92, 0.2);
+}
+
+.gold-gradient-btn:hover {
+  background: linear-gradient(135deg, #fde047 0%, #c99330 100%);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(229, 185, 92, 0.35);
+}
+
+/* Custom Scrollbars */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+::-webkit-scrollbar-track {
+  background: #0f121a;
+}
+::-webkit-scrollbar-thumb {
+  background: #272d3f;
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #e5b95c;
+}
+
+/* Floor Plan Interactive Canvas Styles */
+.floor-plan-canvas {
+  position: relative;
+  width: 100%;
+  min-height: 480px;
+  background-color: #0d1017;
+  background-image: 
+    radial-gradient(circle at 50% 50%, rgba(229, 185, 92, 0.04) 0%, transparent 70%),
+    linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+  background-size: 100% 100%, 32px 32px, 32px 32px;
+  border: 1px solid rgba(229, 185, 92, 0.2);
+  border-radius: 1rem;
+  overflow: hidden;
+}
+
+.zone-marker {
+  position: absolute;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: rgba(229, 185, 92, 0.6);
+  pointer-events: none;
+}
+
+/* Table Nodes in Floor Map */
+.table-node {
+  position: absolute;
+  transform: translate(-50%, -50%);
+  cursor: pointer;
+  transition: all 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  user-select: none;
+}
+
+.table-node:hover:not(.status-reserved):not(.status-occupied) {
+  transform: translate(-50%, -50%) scale(1.08);
+  z-index: 20;
+}
+
+.table-surface {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 0.75rem;
+  border: 2px solid transparent;
+  transition: all 0.2s ease;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
+}
+
+/* Status States */
+.table-node.status-available .table-surface {
+  background: #142820;
+  border-color: #10b981;
+  color: #a7f3d0;
+}
+.table-node.status-available:hover .table-surface {
+  box-shadow: 0 0 15px rgba(16, 185, 129, 0.5);
+}
+
+.table-node.status-reserved {
+  cursor: not-allowed;
+  opacity: 0.55;
+}
+.table-node.status-reserved .table-surface {
+  background: #2b1414;
+  border-color: #ef4444;
+  color: #fca5a5;
+}
+
+.table-node.status-occupied {
+  cursor: not-allowed;
+  opacity: 0.8;
+}
+.table-node.status-occupied .table-surface {
+  background: #2b2112;
+  border-color: #f59e0b;
+  color: #fde68a;
+}
+
+.table-node.status-selected .table-surface {
+  background: #e5b95c !important;
+  border-color: #fff !important;
+  color: #0b0d13 !important;
+  box-shadow: 0 0 24px rgba(229, 185, 92, 0.8) !important;
+  transform: scale(1.04);
+}
+
+/* Shapes */
+.table-shape-round {
+  width: 58px;
+  height: 58px;
+  border-radius: 9999px;
+}
+.table-shape-square {
+  width: 62px;
+  height: 62px;
+  border-radius: 10px;
+}
+.table-shape-rectangle {
+  width: 90px;
+  height: 62px;
+  border-radius: 12px;
+}
+.table-shape-booth {
+  width: 82px;
+  height: 66px;
+  border-radius: 14px;
+}
+
+/* Mini Chairs around tables */
+.chair-indicator {
+  position: absolute;
+  width: 8px;
+  height: 8px;
+  border-radius: 9999px;
+  background: #4b5563;
+  pointer-events: none;
+}
+.table-node.status-selected .chair-indicator {
+  background: #e5b95c;
+}
+
+/* Step Wizard Progress Bar */
+.step-circle {
+  transition: all 0.3s ease;
+}
+.step-active .step-circle {
+  background: var(--primary-gold);
+  color: #0b0d13;
+  box-shadow: 0 0 16px rgba(229, 185, 92, 0.6);
+}
+.step-completed .step-circle {
+  background: #10b981;
+  color: #ffffff;
+}
+
+/* Booking Pass / Ticket Print & Display */
+.ticket-edge {
+  position: relative;
+}
+.ticket-edge::before,
+.ticket-edge::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 20px;
+  height: 20px;
+  background-color: var(--bg-dark);
+  border-radius: 50%;
+  z-index: 10;
+}
+.ticket-edge::before {
+  left: -10px;
+}
+.ticket-edge::after {
+  right: -10px;
+}
+
+@media print {
+  body * {
+    visibility: hidden;
+  }
+  #bookingConfirmationModal, #bookingConfirmationModal * {
+    visibility: visible;
+  }
+  #bookingConfirmationModal {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    background: #fff !important;
+    color: #000 !important;
+  }
+}
+
