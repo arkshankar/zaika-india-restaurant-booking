@@ -370,33 +370,33 @@
     }
   }
 
+  // The QR code always points to the public GitHub Pages menu.
   function getScannableMenuUrl() {
-    const hostIp = window.LOCAL_NETWORK_IP || "10.80.1.157";
-    const port = window.SERVER_PORT || 8000;
+    return 'https://arkshankar.github.io/zaika-india-restaurant-booking/menu';
+  }
 
-    if (window.location.protocol.startsWith('http')) {
-      // Swap localhost → LAN IP so phone on same Wi-Fi can reach it
-      const hostname = (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1')
-        ? hostIp
-        : window.location.hostname;
-      const currentPort = window.location.port ? `:${window.location.port}` : (port ? `:${port}` : '');
-      const pathname = window.location.pathname.substring(0, window.location.pathname.lastIndexOf('/') + 1);
-      return `${window.location.protocol}//${hostname}${currentPort}${pathname}menu.html`;
-    } else {
-      return `http://${hostIp}:${port}/menu.html`;
+  function renderQrCode(container, url, size) {
+    if (!container) return;
+
+    if (!window.QRCode || typeof window.QRCode.toDataURL !== 'function') {
+      container.innerHTML = '<span class="text-xs text-stone-500">QR code could not load.</span>';
+      return;
     }
+
+    window.QRCode.toDataURL(url, {
+      width: size,
+      margin: 1,
+      color: { dark: '#0b0d13', light: '#ffffff' }
+    }, (error, dataUrl) => {
+      if (error) {
+        container.innerHTML = '<span class="text-xs text-stone-500">QR code could not load.</span>';
+        return;
+      }
+
+      container.innerHTML = `<img src="${dataUrl}" alt="QR code for Zaika India menu" class="w-full h-full rounded-md">`;
+    });
   }
 
-  function populateTableDropdown() {
-    const dropdown = document.getElementById('modalTableSelectDropdown');
-    if (!dropdown || dropdown.children.length > 0) return;
-
-    dropdown.innerHTML = RESTAURANT_DATA.tables.map(tbl => `
-      <option value="${tbl.id}">${tbl.name} (${tbl.zone.toUpperCase()} • ${tbl.capacity} Seats)</option>
-    `).join('');
-  }
-
-  // updateModalQrCode — generates a compact QR pointing to menu.html (cuisine-grouped food menu)
   function updateModalQrCode() {
     const directLink = document.getElementById('btnDirectOpenQrMenu');
     const qrContainer = document.getElementById('modalQrCodeContainer');
@@ -407,11 +407,7 @@
     if (directLink) directLink.href = targetUrl;
     if (urlDisplay) urlDisplay.textContent = targetUrl;
 
-    if (qrContainer) {
-      if (window.QRCodeEngine) {
-        qrContainer.innerHTML = window.QRCodeEngine.generateSVG(targetUrl, 160);
-      }
-    }
+    renderQrCode(qrContainer, targetUrl, 160);
   }
 
   // Wizard Logic & Step Transitions
@@ -1066,43 +1062,11 @@
       }
     }
 
-    // Generate Real Scannable QR Code SVG for Google Lens & Camera
     const qrContainer = document.getElementById('confPassQrCode');
-    if (qrContainer) {
-      const passUrl = getScannableMenuUrl();
-      if (window.QRCodeEngine) {
-        qrContainer.innerHTML = window.QRCodeEngine.generateSVG(passUrl, 100);
-      } else {
-        qrContainer.innerHTML = generateQrSvg(booking.id);
-      }
-    }
+    renderQrCode(qrContainer, getScannableMenuUrl(), 100);
 
     modal.classList.remove('hidden');
     if (window.lucide) lucide.createIcons();
-  }
-
-  // Helper to render high tech QR code graphic
-  function generateQrSvg(id) {
-    return `
-      <svg class="w-24 h-24 p-1 bg-white rounded-lg shadow" viewBox="0 0 100 100">
-        <rect x="0" y="0" width="100" height="100" fill="#ffffff" />
-        <rect x="10" y="10" width="25" height="25" fill="#0b0d13" />
-        <rect x="15" y="15" width="15" height="15" fill="#ffffff" />
-        <rect x="18" y="18" width="9" height="9" fill="#0b0d13" />
-        <rect x="65" y="10" width="25" height="25" fill="#0b0d13" />
-        <rect x="70" y="15" width="15" height="15" fill="#ffffff" />
-        <rect x="73" y="18" width="9" height="9" fill="#0b0d13" />
-        <rect x="10" y="65" width="25" height="25" fill="#0b0d13" />
-        <rect x="15" y="70" width="15" height="15" fill="#ffffff" />
-        <rect x="18" y="73" width="9" height="9" fill="#0b0d13" />
-        <rect x="42" y="15" width="8" height="8" fill="#0b0d13" />
-        <rect x="52" y="25" width="6" height="14" fill="#0b0d13" />
-        <rect x="42" y="45" width="18" height="18" fill="#0b0d13" />
-        <rect x="66" y="52" width="14" height="6" fill="#0b0d13" />
-        <rect x="78" y="65" width="12" height="12" fill="#0b0d13" />
-        <rect x="45" y="72" width="15" height="8" fill="#0b0d13" />
-      </svg>
-    `;
   }
 
   // Reset Booking Form

@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Zaika India | Authentic Royal Table Reservation & Digital QR Menu</title>
+  <title>Zaika India | Authentic Royal Table Reservation</title>
   <!-- Tailwind CSS CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
   <script>
@@ -975,15 +975,15 @@
 
         <!-- URL display (read-only) -->
         <div class="bg-stone-950 border border-stone-800 rounded-lg px-3 py-2 text-left">
-          <p class="text-[9px] uppercase font-bold text-amber-300 mb-1">📡 Menu URL (Same Wi-Fi)</p>
-          <p id="modalQrUrlDisplay" class="text-[11px] text-amber-300 font-mono break-all leading-snug">http://10.80.1.157:8000/menu.html</p>
-          <p class="text-[10px] text-stone-500 mt-1">⚡ Phone must be on the same Wi-Fi / Hotspot</p>
+          <p class="text-[9px] uppercase font-bold text-amber-300 mb-1">🔗 Public Menu URL</p>
+          <p id="modalQrUrlDisplay" class="text-[11px] text-amber-300 font-mono break-all leading-snug">https://arkshankar.github.io/zaika-india-restaurant-booking/menu</p>
+          <p class="text-[10px] text-stone-500 mt-1">📱 Scan with any phone camera</p>
         </div>
       </div>
 
       <!-- Actions -->
       <div class="flex items-center gap-2 mt-4">
-        <a id="btnDirectOpenQrMenu" href="menu.html" target="_blank" class="flex-1 py-2.5 rounded-xl gold-gradient-btn text-xs font-bold text-center flex items-center justify-center gap-1.5">
+        <a id="btnDirectOpenQrMenu" href="https://arkshankar.github.io/zaika-india-restaurant-booking/menu" target="_blank" class="flex-1 py-2.5 rounded-xl gold-gradient-btn text-xs font-bold text-center flex items-center justify-center gap-1.5">
           <i data-lucide="external-link" class="w-3.5 h-3.5"></i>
           <span>Open Menu</span>
         </a>
@@ -997,8 +997,7 @@
   </div>
 
   <!-- Scripts -->
-  <script src="network_info.js"></script>
-  <script src="qrcode.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.4/build/qrcode.min.js"></script>
   <script src="data.js"></script>
   <script src="app.js"></script>
 </body>
