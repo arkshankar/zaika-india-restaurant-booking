@@ -341,7 +341,6 @@
     const openQrBtn = document.getElementById('btnOpenQrModal');
     const qrModal = document.getElementById('tableQrCodeModal');
     const closeQrBtn = document.getElementById('btnCloseQrModal');
-    const printTableTentBtn = document.getElementById('btnPrintTableTent');
 
     if (openQrBtn && qrModal) {
       openQrBtn.addEventListener('click', () => {
@@ -363,11 +362,6 @@
       });
     }
 
-    if (printTableTentBtn) {
-      printTableTentBtn.addEventListener('click', () => {
-        window.print();
-      });
-    }
   }
 
   // The QR code always points to the public GitHub Pages menu.
