@@ -375,39 +375,19 @@
     return 'https://arkshankar.github.io/zaika-india-restaurant-booking/menu';
   }
 
-  function renderQrCode(container, url, size) {
+  function renderQrCode(container) {
     if (!container) return;
 
-    if (!window.QRCode || typeof window.QRCode.toDataURL !== 'function') {
-      container.innerHTML = '<span class="text-xs text-stone-500">QR code could not load.</span>';
-      return;
-    }
-
-    window.QRCode.toDataURL(url, {
-      width: size,
-      margin: 1,
-      color: { dark: '#0b0d13', light: '#ffffff' }
-    }, (error, dataUrl) => {
-      if (error) {
-        container.innerHTML = '<span class="text-xs text-stone-500">QR code could not load.</span>';
-        return;
-      }
-
-      container.innerHTML = `<img src="${dataUrl}" alt="QR code for Zaika India menu" class="w-full h-full rounded-md">`;
-    });
+    container.innerHTML = '<img src="menu-qr.png" alt="QR code for Zaika India menu" class="w-full h-full rounded-md">';
   }
 
   function updateModalQrCode() {
     const directLink = document.getElementById('btnDirectOpenQrMenu');
     const qrContainer = document.getElementById('modalQrCodeContainer');
-    const urlDisplay = document.getElementById('modalQrUrlDisplay');
-
     const targetUrl = getScannableMenuUrl();
 
     if (directLink) directLink.href = targetUrl;
-    if (urlDisplay) urlDisplay.textContent = targetUrl;
-
-    renderQrCode(qrContainer, targetUrl, 160);
+    renderQrCode(qrContainer);
   }
 
   // Wizard Logic & Step Transitions
@@ -1063,7 +1043,7 @@
     }
 
     const qrContainer = document.getElementById('confPassQrCode');
-    renderQrCode(qrContainer, getScannableMenuUrl(), 100);
+    renderQrCode(qrContainer);
 
     modal.classList.remove('hidden');
     if (window.lucide) lucide.createIcons();
