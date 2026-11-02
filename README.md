@@ -1,4 +1,4 @@
-# 🍽️ L'Aura Bistro & Lounge — Restaurant Table Reservation System
+# 🍽️ Zaika India — Restaurant Table Reservation System
 
 > **Academic Project** | Front-End Engineering & Web Development  
 > **Target Audience:** 3rd Year B.Tech / B.E. / BCA / MCA / B.Sc Computer Science Evaluation, Lab Vivas & Portfolio
