@@ -798,13 +798,16 @@
 
       <!-- Ticket Card -->
       <div class="ticket-edge p-5 rounded-xl bg-stone-900 border border-stone-700/80 text-stone-100 shadow-inner">
-        <div class="flex items-center justify-between pb-3 border-b border-stone-800">
-          <div>
-            <span class="text-[10px] text-stone-400 uppercase tracking-wider block">Booking Reference</span>
-            <span id="confPassCode" class="text-base font-mono font-bold text-amber-400 tracking-wider">RES-0000</span>
+        <div class="confirmation-ticket-header pb-4 border-b border-stone-800">
+          <div class="flex items-center justify-between gap-3">
+            <div>
+              <span class="text-[10px] text-stone-400 uppercase tracking-wider block">Booking Reference</span>
+              <span id="confPassCode" class="text-base font-mono font-bold text-amber-400 tracking-wider">RES-0000</span>
+            </div>
+            <span class="text-[10px] uppercase tracking-wider text-stone-500">Digital menu pass</span>
           </div>
           <!-- QR Code Preview -->
-          <div id="confPassQrCode"></div>
+          <div id="confPassQrCode" class="confirmation-qr mt-4" aria-label="QR code for the Zaika India menu"></div>
         </div>
 
         <div class="grid grid-cols-2 gap-3 py-3 text-xs border-b border-stone-800">

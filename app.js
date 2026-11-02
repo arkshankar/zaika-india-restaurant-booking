@@ -373,10 +373,27 @@
     return 'https://arkshankar.github.io/zaika-india-restaurant-booking/menu';
   }
 
+  const MENU_CATEGORY_GROUPS = {
+    starters: ['tandoor-grills', 'mumbai-street'],
+    mains: ['north-indian', 'parsi-bombay', 'south-indian', 'coastal-seafood', 'continental-fast'],
+    desserts: ['desserts-sweets'],
+    drinks: ['beverages-drinks']
+  };
+
+  function matchesMenuCategory(item, filter) {
+    if (filter === 'all') return true;
+    return (MENU_CATEGORY_GROUPS[filter] || []).includes(item.cuisine);
+  }
+
+  function getCuisineLabel(cuisineId) {
+    const cuisine = RESTAURANT_DATA.cuisines.find(item => item.id === cuisineId);
+    return cuisine ? cuisine.label : 'Zaika Special';
+  }
+
   function renderQrCode(container) {
     if (!container) return;
 
-    container.innerHTML = '<img src="menu-qr.png" alt="QR code for Zaika India menu" class="w-full h-full rounded-md">';
+    container.innerHTML = '<img src="menu-qr.png" alt="QR code for Zaika India menu" class="qr-code-image rounded-md">';
   }
 
   function updateModalQrCode() {
@@ -773,7 +790,7 @@
     const publicMenuContainer = document.getElementById('publicMenuGrid');
 
     const filtered = RESTAURANT_DATA.menuItems.filter(item => {
-      const matchesCategory = state.menuFilter === 'all' || item.category === state.menuFilter;
+      const matchesCategory = matchesMenuCategory(item, state.menuFilter);
       const matchesSearch = !state.menuSearch || 
         item.name.toLowerCase().includes(state.menuSearch) ||
         item.description.toLowerCase().includes(state.menuSearch);
@@ -879,7 +896,7 @@
             <p class="text-stone-400 text-xs leading-relaxed">${item.description}</p>
           </div>
           <div class="mt-4 pt-3 border-t border-stone-800/80 flex items-center justify-between">
-            <span class="text-[11px] text-stone-500 uppercase tracking-wider">${item.category}</span>
+            <span class="text-[11px] text-stone-500 uppercase tracking-wider">${getCuisineLabel(item.cuisine)}</span>
             <button type="button" class="btn-menu-order text-xs text-amber-400 hover:text-amber-300 font-semibold flex items-center gap-1" data-id="${item.id}">
               Pre-order with Table &rarr;
             </button>
@@ -1002,9 +1019,15 @@
     if (state.isSubmitting) return;
 
     const guest = state.booking.guest;
-    if (!guest.name) {
+    if (!guest.name || !guest.name.trim()) {
       showToast('Please enter your full name', 'error');
       document.getElementById('guestFullName')?.focus();
+      return;
+    }
+
+    if (!guest.phone || !guest.phone.trim()) {
+      showToast('Please enter a contact phone number', 'error');
+      document.getElementById('guestPhone')?.focus();
       return;
     }
 
@@ -1013,11 +1036,6 @@
     if (submitButton) {
       submitButton.disabled = true;
       submitButton.classList.add('opacity-60', 'cursor-wait');
-    }
-    if (!guest.phone) {
-      showToast('Please enter a contact phone number', 'error');
-      document.getElementById('guestPhone')?.focus();
-      return;
     }
 
     // Calculate total
@@ -1079,12 +1097,14 @@
     if (!modal) return;
 
     document.getElementById('confPassCode').textContent = booking.id;
-    document.getElementById('confPassGuestName').textContent = booking.guest.name;
+    document.getElementById('confPassGuestName').textContent = booking.guest?.name?.trim() || 'Guest';
     document.getElementById('confPassDate').textContent = formatDateDisplay(booking.date);
     document.getElementById('confPassTime').textContent = booking.timeSlot;
     document.getElementById('confPassGuests').textContent = `${booking.partySize} Person(s)`;
-    document.getElementById('confPassTable').textContent = `${booking.table.name} (${booking.table.zone.toUpperCase()})`;
-    document.getElementById('confPassOccasion').textContent = booking.guest.occasion.toUpperCase();
+    document.getElementById('confPassTable').textContent = booking.table
+      ? `${booking.table.name} (${booking.table.zone.toUpperCase()})`
+      : 'Assigned at arrival';
+    document.getElementById('confPassOccasion').textContent = (booking.guest?.occasion || 'casual').toUpperCase();
 
     // Pre-orders summary on pass
     const preordersPassList = document.getElementById('confPassPreorders');
